@@ -5,7 +5,7 @@ const db = require('./config/keys').mongourl;
 const path = require('path');
 
 const items = require('./routes/api/items');
-const users = require('./routes/api/users');
+
 
 //Database connection
 mongoose.connect(db)
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 //routes
 app.use('/api/items',items);
-app.use('/api/users',users);
+
 
 if(process.env.NODE_ENV === 'production'){
     app.use(express.static('client/build'));
