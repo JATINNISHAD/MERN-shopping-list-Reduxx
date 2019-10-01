@@ -5,7 +5,7 @@ import {TransitionGroup,CSSTransition} from 'react-transition-group';
 import ModalComp from './layout/ModalComp';
 
 const HomePage = ()=>{
-    const {items,deleteItem,isLoading} = useContext(shoppingContext);
+    const {items,deleteItem,isLoading,isAuthenticated} = useContext(shoppingContext);
     if(isLoading){
         return(
             <div className="jumbotron text-center">
@@ -16,18 +16,19 @@ const HomePage = ()=>{
         return(
             <React.Fragment>
                 <Container>
-                    <ModalComp/>
+                    {(isAuthenticated?<ModalComp/>:null)}
                     <ListGroup>
                         <TransitionGroup className="shopping-list" >
                             {console.log(items)}
                             {items.map(({_id,name})=>(
                                 <CSSTransition key={_id} timeout={500} classNames="fade">
                                     <ListGroupItem>
+                                        {(isAuthenticated)?
                                         <Button className="remove-btn mx-2"color="danger"size="sm"
-                                            onClick={()=>deleteItem(_id)}
-                                        >
-                                            &times;
-                                        </Button>
+                                        onClick={()=>deleteItem(_id)}
+                                    >
+                                        &times;
+                                    </Button>:null}
                                         {name}
                                     </ListGroupItem>
                                 </CSSTransition>

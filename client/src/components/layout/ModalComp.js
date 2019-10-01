@@ -27,6 +27,7 @@ const ModalComp=()=>{
     return(
         <React.Fragment>
             <Button color="dark" onClick={handleToggle}>Add Item</Button>
+            <hr/>
             <Modal isOpen={togval} toggle={handleToggle}>
                 <ModalHeader toggle={handleToggle}>Add To List</ModalHeader>
                 <ModalBody>
