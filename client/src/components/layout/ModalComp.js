@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {addItem} from '../../actions/itemActions';
 import PropTypes from 'prop-types';
 
-class ModalComp extends Component{
+class ItemModal extends Component{
     state={
         modal:false,
         name:''

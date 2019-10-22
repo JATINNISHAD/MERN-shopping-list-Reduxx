@@ -3,6 +3,7 @@ import {Container,ListGroupItem,Button,ListGroup} from 'reactstrap';
 import {TransitionGroup,CSSTransition} from 'react-transition-group';
 import PropTypes from 'prop-types';
 
+import ItemModal from './layout/ModalComp';
 import {connect} from 'react-redux';
 import {getItems,deleteItem} from '../actions/itemActions';
 
@@ -29,6 +30,7 @@ class HomePage extends Component{
         return(
             <React.Fragment>
                 <Container>
+                    <ItemModal/>
                     <ListGroup>
                         <TransitionGroup className="shopping-list" >
                             {items.map(({_id,name})=>(
@@ -36,7 +38,7 @@ class HomePage extends Component{
                                     <ListGroupItem>
                                         {this.props.isAuthenticated?
                                         (<Button className="remove-btn mx-2"color="danger"size="sm"
-                                        onClick={()=>deleteItem(_id)}
+                                        onClick={this.onDeleteClick.bind(this,_id)}
                                     >
                                         &times;
                                     </Button>):null}
