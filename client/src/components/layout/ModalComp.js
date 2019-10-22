@@ -1,47 +1,103 @@
-import React,{useContext,useState} from 'react';
-import {shoppingContext} from '../../shoppingContext';
+import React,{Component} from 'react';
+
 import {Button,Modal,ModalHeader,ModalBody,Form,FormGroup,Label,Input} from 'reactstrap';
+import {connect} from 'react-redux';
+import {addItem} from '../../actions/itemActions';
+import PropTypes from 'prop-types';
 
-const ModalComp=()=>{
-    const [iname,setIname] =useState('');
-    const {addItem} = useContext(shoppingContext);
-    const [togval,setTogval] = useState(false);
-    
-
-    const handleToggle=()=>{
-        setTogval(!togval);
+class ModalComp extends Component{
+    state={
+        modal:false,
+        name:''
     };
-   
-    const onChange=(e)=>{
-        setIname(e.target.value);
-    }
-    const handleForm=(e)=>{
+
+    toggle = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
+    };
+
+    onChange = e => {
+        this.setState({ [e.target.name]: e.target.value });
+    };
+    
+    onSubmit = e => {
         e.preventDefault();
-        const newItem = {name:iname};
-        addItem(newItem)
-        setIname('');
-        setTogval(!togval);
-        
-    }
-     
-    return(
-        <React.Fragment>
-            <Button color="dark" onClick={handleToggle}>Add Item</Button>
-            <hr/>
-            <Modal isOpen={togval} toggle={handleToggle}>
-                <ModalHeader toggle={handleToggle}>Add To List</ModalHeader>
-                <ModalBody>
-                    <Form  onSubmit={handleForm} >
-                        <FormGroup>
-                            <Label for="item">Item</Label>
-                            <Input type="text" value={iname} id="item" placeholder="Add your Item" onChange={onChange}/>
-                            <Button color="dark" className="mx-auto" style={{margin:"2rem"}} block>Add</Button>
-                        </FormGroup>
-                    </Form>
-                </ModalBody>
-            </Modal>
-        </React.Fragment>
+    
+        const newItem = {
+            name: this.state.name
+        };
+    
+        // Add item via addItem action
+        this.props.addItem(newItem);
+    
+        // Close modal
+        this.toggle();
+    };
+
+    onChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  onSubmit = e => {
+    e.preventDefault();
+
+    const newItem = {
+      name: this.state.name
+    };
+
+    // Add item via addItem action
+    this.props.addItem(newItem);
+
+    // Close modal
+    this.toggle();
+  };
+    render() {
+    return (
+        <div>
+        {this.props.isAuthenticated ? (
+            <Button
+            color='dark'
+            style={{ marginBottom: '2rem' }}
+            onClick={this.toggle}
+            >
+            Add Item
+            </Button>
+        ) : (
+            <h4 className='mb-3 ml-4'>Please log in to manage items</h4>
+        )}
+
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+            <ModalHeader toggle={this.toggle}>Add To Shopping List</ModalHeader>
+            <ModalBody>
+            <Form onSubmit={this.onSubmit}>
+                <FormGroup>
+                <Label for='item'>Item</Label>
+                <Input
+                    type='text'
+                    name='name'
+                    id='item'
+                    placeholder='Add shopping item'
+                    onChange={this.onChange}
+                />
+                <Button color='dark' style={{ marginTop: '2rem' }} block>
+                    Add Item
+                </Button>
+                </FormGroup>
+            </Form>
+            </ModalBody>
+        </Modal>
+        </div>
     );
+    }
 }
 
-export default ModalComp;
+const mapStateToProps = state => ({
+    item: state.item,
+    isAuthenticated: state.auth.isAuthenticated
+});
+  
+export default connect(
+    mapStateToProps,
+    { addItem }
+)(ItemModal);

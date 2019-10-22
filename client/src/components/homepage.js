@@ -1,34 +1,45 @@
-import React,{useContext} from 'react';
-import {shoppingContext} from '../shoppingContext';
+import React,{Component} from 'react';
 import {Container,ListGroupItem,Button,ListGroup} from 'reactstrap';
 import {TransitionGroup,CSSTransition} from 'react-transition-group';
-import ModalComp from './layout/ModalComp';
+import PropTypes from 'prop-types';
 
-const HomePage = ()=>{
-    const {items,deleteItem,isLoading,isAuthenticated} = useContext(shoppingContext);
-    if(isLoading){
-        return(
-            <div className="jumbotron text-center">
-                <h1>fetching data....</h1>
-            </div>
-        );
-    }else{
+import {connect} from 'react-redux';
+import {getItems,deleteItem} from '../actions/itemActions';
+
+
+class HomePage extends Component{
+    
+    static propTypes = {
+        getItems:PropTypes.func.isRequired,
+        item:PropTypes.object.isRequired,
+        isAuthenticated: PropTypes.bool
+    };
+
+    componentDidMount(){
+        this.props.getItems();
+    }
+
+    onDeleteClick = id =>{
+        this.props.deleteItem(id);
+    };
+    
+
+    render(){
+        const { items } = this.props.item;
         return(
             <React.Fragment>
                 <Container>
-                    {(isAuthenticated?<ModalComp/>:null)}
                     <ListGroup>
                         <TransitionGroup className="shopping-list" >
-                            {console.log(items)}
                             {items.map(({_id,name})=>(
                                 <CSSTransition key={_id} timeout={500} classNames="fade">
                                     <ListGroupItem>
-                                        {(isAuthenticated)?
-                                        <Button className="remove-btn mx-2"color="danger"size="sm"
+                                        {this.props.isAuthenticated?
+                                        (<Button className="remove-btn mx-2"color="danger"size="sm"
                                         onClick={()=>deleteItem(_id)}
                                     >
                                         &times;
-                                    </Button>:null}
+                                    </Button>):null}
                                         {name}
                                     </ListGroupItem>
                                 </CSSTransition>
@@ -41,4 +52,13 @@ const HomePage = ()=>{
     }
 }
 
-export default HomePage;
+const mapStateToProps = state =>({
+    item:state.item,
+    isAuthenticated:state.auth.isAuthenticated
+});
+
+
+export default connect(
+    mapStateToProps,
+    {getItems,deleteItem}
+)(HomePage);

@@ -1,4 +1,4 @@
 {
-    "mongourl":"yourmongourlshouldbehere",
+    "mongourl":"mongodb+srv://jatin:jatin123@mern-project-first-rknmw.mongodb.net/test?retryWrites=true&w=majority",
     "jwtSecret":"mynameisjatin"
 }
